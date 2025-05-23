@@ -1,34 +1,26 @@
 import { use } from "react";
 import { useEffect, useState } from "react";
+import FoodCard from "./FoodCard";
 
 function FoodList() {
-  let [meals, setMeals] = useState({
-    loading: false,
-    meals: [],
-  });
+  let [meals, setMeals] = useState([]);
 
   useEffect(() => {
-    setMeals({ loading: true });
     fetch("http://localhost:3000/meals")
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
-        setLoading(false);
+        setMeals(data);
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
-        setLoading(false);
       });
   }, []);
   return (
-    <div>
-      <h1>Food List</h1>
-      <ul>
-        <li>Pizza</li>
-        <li>Burger</li>
-        <li>Pasta</li>
-      </ul>
-    </div>
+    <ul id="meals">
+      {meals.map((meal) => (
+        <FoodCard key={meal.id} meal={meal} />
+      ))}
+    </ul>
   );
 }
 
