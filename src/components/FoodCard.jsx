@@ -1,3 +1,5 @@
+import AddButton from "./AddButton";
+
 function FoodCard({ meal }) {
   const url = `http://localhost:3000/`;
   return (
@@ -9,9 +11,7 @@ function FoodCard({ meal }) {
           <p className="meal-item-price">{meal.price}</p>
           <p className="meal-item-description">{meal.description}</p>
           <div className="meal-item-actions">
-            <button onClick={() => console.log(`Add ${meal.name} to cart`)}>
-              Add to Cart
-            </button>
+            <AddButton meal={meal} />
           </div>
         </div>
       </article>
