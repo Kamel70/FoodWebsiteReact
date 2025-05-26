@@ -1,11 +1,11 @@
-function NavBar() {
+function NavBar({ openCart }) {
   return (
     <nav id="main-header">
       <div id="title">
         <img src={"/src/assets/logo.jpg"} alt="React Food" />
         <h1>React Food</h1>
       </div>
-      <button>Cart</button>
+      <button onClick={openCart}>Cart</button>
     </nav>
   );
 }
