@@ -21,48 +21,84 @@ app.get('/meals', async (req, res) => {
 });
 
 app.post('/orders', async (req, res) => {
-  const orderData = req.body.order;
-
-  if (orderData === null || orderData.items === null || orderData.items.length === 0) {
-    return res
-      .status(400)
-      .json({ message: 'Missing data.' });
-  }
-
-  if (
-    orderData.customer.email === null ||
-    !orderData.customer.email.includes('@') ||
-    orderData.customer.name === null ||
-    orderData.customer.name.trim() === '' ||
-    orderData.customer.street === null ||
-    orderData.customer.street.trim() === '' ||
-    orderData.customer['postal-code'] === null ||
-    orderData.customer['postal-code'].trim() === '' ||
-    orderData.customer.city === null ||
-    orderData.customer.city.trim() === ''
-  ) {
-    return res.status(400).json({
-      message:
-        'Missing data: Email, name, street, postal code or city is missing.',
+  try {
+    // Fix: Use req.body directly instead of req.body.order
+    const orderData = req.body;
+    
+    // Add logging to debug
+    console.log('Received order data:', orderData);
+    
+    // Check if orderData exists and has required properties
+    if (!orderData || !orderData.items || orderData.items.length === 0) {
+      return res.status(400).json({ message: 'Missing order data or items.' });
+    }
+    
+    // Check if customer data exists
+    if (!orderData.customer) {
+      return res.status(400).json({ message: 'Missing customer data.' });
+    }
+    
+    // Validate customer data with better null/undefined checks
+    const { customer } = orderData;
+    if (
+      !customer.email ||
+      !customer.email.includes('@') ||
+      !customer.name ||
+      customer.name.trim() === '' ||
+      !customer.street ||
+      customer.street.trim() === '' ||
+      !customer['postal-code'] ||
+      customer['postal-code'].trim() === '' ||
+      !customer.city ||
+      customer.city.trim() === ''
+    ) {
+      return res.status(400).json({
+        message: 'Missing data: Email, name, street, postal code or city is missing.',
+      });
+    }
+    
+    // Create new order with proper ID generation
+    const newOrder = {
+      ...orderData,
+      id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
+      createdAt: new Date().toISOString(),
+    };
+    
+    // Read existing orders with error handling
+    let allOrders = [];
+    try {
+      const ordersData = await fs.readFile('./data/orders.json', 'utf8');
+      allOrders = JSON.parse(ordersData);
+    } catch (error) {
+      // If file doesn't exist or is invalid, start with empty array
+      console.log('Orders file not found or invalid, starting with empty array');
+      allOrders = [];
+    }
+    
+    // Add new order
+    allOrders.push(newOrder);
+    
+    // Write back to file
+    await fs.writeFile('./data/orders.json', JSON.stringify(allOrders, null, 2));
+    
+    res.status(201).json({ 
+      message: 'Order created!', 
+      orderId: newOrder.id 
+    });
+    
+  } catch (error) {
+    console.error('Error processing order:', error);
+    res.status(500).json({ 
+      message: 'Internal server error while processing order.' 
     });
   }
-
-  const newOrder = {
-    ...orderData,
-    id: (Math.random() * 1000).toString(),
-  };
-  const orders = await fs.readFile('./data/orders.json', 'utf8');
-  const allOrders = JSON.parse(orders);
-  allOrders.push(newOrder);
-  await fs.writeFile('./data/orders.json', JSON.stringify(allOrders));
-  res.status(201).json({ message: 'Order created!' });
 });
 
 app.use((req, res) => {
   if (req.method === 'OPTIONS') {
     return res.sendStatus(200);
   }
-
+  
   res.status(404).json({ message: 'Not found' });
 });
 

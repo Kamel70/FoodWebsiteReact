@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useSelector } from "react-redux";
 
 function Checkout({ dialog, closeCheckout }) {
   const [formData, setFormData] = useState({
@@ -15,15 +16,10 @@ function Checkout({ dialog, closeCheckout }) {
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null);
-
-  // Sample cart items - in a real app, these would come from props or context
-  const [cartItems] = useState([
-    { id: 1, name: "Premium Headphones", price: 199.99, quantity: 1 },
-    { id: 2, name: "Wireless Mouse", price: 79.99, quantity: 2 },
-  ]);
+  const cartItems = useSelector((state) => state.cart);
 
   const totalAmount = cartItems.reduce(
-    (sum, item) => sum + item.price * item.quantity,
+    (sum, item) => sum + item.product.price * item.quantity,
     0
   );
 
@@ -100,24 +96,39 @@ function Checkout({ dialog, closeCheckout }) {
         ...formData,
         items: cartItems,
       };
-
-      // In a real app, you'd make an actual API call here
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      console.log("Order submitted:", orderData);
-      setSubmitStatus("success");
-
-      // Reset form after successful submission
-      setFormData({
-        customer: {
-          email: "",
-          name: "",
-          street: "",
-          "postal-code": "",
-          city: "",
+      fetch("http://localhost:3000/orders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-        items: [],
-      });
+        body: JSON.stringify(orderData),
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then((data) => {
+          console.log("Success:", data);
+          console.log("Order submitted:", orderData);
+          setSubmitStatus("success");
+
+          // Reset form after successful submission
+          setFormData({
+            customer: {
+              email: "",
+              name: "",
+              street: "",
+              "postal-code": "",
+              city: "",
+            },
+            items: [],
+          });
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
     } catch (error) {
       console.error("Order submission failed:", error);
       setSubmitStatus("error");
@@ -142,7 +153,7 @@ function Checkout({ dialog, closeCheckout }) {
   };
   return (
     <dialog ref={dialog} onClose={closeCheckout} className="modal">
-      <form>
+      <form onSubmit={handleSubmit}>
         <h2 style={{ marginBottom: "1.5rem", color: "#1f1a09" }}>
           Shipping Information
         </h2>

@@ -5,10 +5,11 @@ import NavBar from "./components/NavBar";
 import Checkout from "./components/Checkout";
 
 function App() {
-  const dialogRef = useRef(null);
-  const checkoutRef = useRef(null);
+  const dialogRef = useRef();
+  const checkoutRef = useRef();
   const openCheckout = () => {
     checkoutRef.current.showModal();
+    closeCart();
   };
   const closeCheckout = () => {
     checkoutRef.current.close();
