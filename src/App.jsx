@@ -1,35 +1,14 @@
-import { useRef } from "react";
-import Cart from "./components/Cart";
-import FoodList from "./components/FoodList";
-import NavBar from "./components/NavBar";
-import Checkout from "./components/Checkout";
+import FoodList from "./components/Food/FoodList";
+import NavBar from "./components/Header/NavBar";
+import Cart from "./components/Cart/Cart";
+import Checkout from "./components/Checkout/Checkout";
 
 function App() {
-  const dialogRef = useRef();
-  const checkoutRef = useRef();
-  const openCheckout = () => {
-    checkoutRef.current.showModal();
-    closeCart();
-  };
-  const closeCheckout = () => {
-    checkoutRef.current.close();
-  };
-  const openCart = () => {
-    dialogRef.current.showModal();
-  };
-
-  const closeCart = () => {
-    dialogRef.current.close();
-  };
   return (
     <>
-      <NavBar openCart={openCart} />
-      <Cart
-        dialog={dialogRef}
-        closeCart={closeCart}
-        openCheckout={openCheckout}
-      />
-      <Checkout dialog={checkoutRef} closeCheckout={closeCheckout} />
+      <NavBar />
+      <Cart />
+      <Checkout />
       <FoodList />
     </>
   );
