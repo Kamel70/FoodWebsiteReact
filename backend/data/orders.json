@@ -1,33 +1,13 @@
 [
   {
     "customer": {
-      "email": "text@example.com",
       "name": "kamel samy",
+      "email": "text@example.com",
       "street": "Benha",
       "postal-code": "13511",
       "city": "Benha"
     },
     "items": [
-      {
-        "product": {
-          "id": "m1",
-          "name": "Mac & Cheese",
-          "price": "8.99",
-          "description": "Creamy cheddar cheese mixed with perfectly cooked macaroni, topped with crispy breadcrumbs. A classic comfort food.",
-          "image": "images/mac-and-cheese.jpg"
-        },
-        "quantity": 1
-      },
-      {
-        "product": {
-          "id": "m2",
-          "name": "Margherita Pizza",
-          "price": "12.99",
-          "description": "A classic pizza with fresh mozzarella, tomatoes, and basil on a thin and crispy crust.",
-          "image": "images/margherita-pizza.jpg"
-        },
-        "quantity": 3
-      },
       {
         "product": {
           "id": "m3",
@@ -37,9 +17,62 @@
           "image": "images/caesar-salad.jpg"
         },
         "quantity": 3
+      },
+      {
+        "product": {
+          "id": "m2",
+          "name": "Margherita Pizza",
+          "price": "12.99",
+          "description": "A classic pizza with fresh mozzarella, tomatoes, and basil on a thin and crispy crust.",
+          "image": "images/margherita-pizza.jpg"
+        },
+        "quantity": 2
+      },
+      {
+        "product": {
+          "id": "m1",
+          "name": "Mac & Cheese",
+          "price": "8.99",
+          "description": "Creamy cheddar cheese mixed with perfectly cooked macaroni, topped with crispy breadcrumbs. A classic comfort food.",
+          "image": "images/mac-and-cheese.jpg"
+        },
+        "quantity": 1
       }
     ],
-    "id": "1748297163477gsj99ce9e",
-    "createdAt": "2025-05-26T22:06:03.477Z"
+    "id": "174844120729619a0k32g7",
+    "createdAt": "2025-05-28T14:06:47.296Z"
+  },
+  {
+    "customer": {
+      "name": "kamel samy",
+      "email": "text@example.com",
+      "street": "Benha",
+      "postal-code": "13511",
+      "city": "Benha"
+    },
+    "items": [
+      {
+        "product": {
+          "id": "m2",
+          "name": "Margherita Pizza",
+          "price": "12.99",
+          "description": "A classic pizza with fresh mozzarella, tomatoes, and basil on a thin and crispy crust.",
+          "image": "images/margherita-pizza.jpg"
+        },
+        "quantity": 1
+      },
+      {
+        "product": {
+          "id": "m3",
+          "name": "Caesar Salad",
+          "price": "7.99",
+          "description": "Romaine lettuce tossed in Caesar dressing, topped with croutons and parmesan shavings.",
+          "image": "images/caesar-salad.jpg"
+        },
+        "quantity": 1
+      }
+    ],
+    "id": "1748464982846ade7mne3u",
+    "createdAt": "2025-05-28T20:43:02.846Z"
   }
 ]

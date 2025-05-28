@@ -5,7 +5,6 @@ import { showCart } from "../../rtk/slices/user-progress-slice";
 
 function NavBar() {
   const dispatch = useDispatch();
-  const userProgress = useSelector((state) => state.userProgress);
   const cartItems = useSelector((state) => state.cart);
   const handleOpenCart = () => {
     dispatch(showCart());

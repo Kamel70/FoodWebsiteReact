@@ -1,19 +1,24 @@
-import { useEffect, useState } from "react";
+import useHTTP from "../../hooks/useHTTP";
+import { Loading } from "../Loading/Loading";
 import FoodCard from "./FoodCard";
 
+const Config = {};
 function FoodList() {
-  let [meals, setMeals] = useState([]);
-
-  useEffect(() => {
-    fetch("http://localhost:3000/meals")
-      .then((response) => response.json())
-      .then((data) => {
-        setMeals(data);
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      });
-  }, []);
+  const {
+    isLoading,
+    error,
+    data: meals,
+  } = useHTTP({
+    url: "http://localhost:3000/meals",
+    config: Config,
+    initialData: [],
+  });
+  if (isLoading) {
+    return <Loading message="Loading meals..." />;
+  }
+  if (error) {
+    return <Error message={error} />;
+  }
   return (
     <ul id="meals">
       {meals.map((meal) => (

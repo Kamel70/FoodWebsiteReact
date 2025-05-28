@@ -1,5 +1,4 @@
 import { useSelector, useDispatch } from "react-redux";
-import { clearCart } from "../../rtk/slices/cart-slice";
 import Button from "../UI/Button";
 import CartItem from "./CartItem";
 import Modal from "../UI/Modal";
@@ -10,6 +9,9 @@ function Cart() {
   const cartItems = useSelector((state) => state.cart);
   const userProgress = useSelector((state) => state.userProgress);
   const dispatch = useDispatch();
+  const cartTotal = formatprice.format(
+    cartItems.reduce((acc, item) => acc + item.quantity * item.product.price, 0)
+  );
   const handleHideCart = () => {
     dispatch(hideCart());
   };
@@ -21,11 +23,10 @@ function Cart() {
     <Modal
       className="cart"
       open={userProgress === "cart"}
-      onClose={handleHideCart}
+      onClose={userProgress === "cart" ? handleHideCart : null}
     >
       <div>
         <h2>Your Cart</h2>
-        <i className="icon-trashcan"></i>
       </div>
 
       <ul>
@@ -37,12 +38,7 @@ function Cart() {
 
       <div className="cart-total">
         Total:
-        {formatprice.format(
-          cartItems.reduce(
-            (acc, item) => acc + item.quantity * item.product.price,
-            0
-          )
-        )}
+        {cartTotal}
       </div>
 
       <div className="modal-actions">
@@ -53,7 +49,9 @@ function Cart() {
         >
           Close
         </Button>
-        <Button onClick={handelShowCheckout}>Checkout</Button>
+        {cartItems.length !== 0 && (
+          <Button onClick={handelShowCheckout}>Checkout</Button>
+        )}
       </div>
     </Modal>
   );
