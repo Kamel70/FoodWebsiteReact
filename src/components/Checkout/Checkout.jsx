@@ -1,3 +1,4 @@
+import { useActionState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import Modal from "../UI/Modal";
 import { hideCheckout } from "../../rtk/slices/user-progress-slice";
@@ -5,6 +6,8 @@ import Button from "../UI/Button";
 import { formatprice } from "../../util/formatting";
 import Input from "../UI/Input";
 import useHTTp from "../../hooks/useHTTP";
+import { clearCart } from "../../rtk/slices/cart-slice";
+import Error from "../Error/Error";
 
 const config = {
   method: "POST",
@@ -19,7 +22,7 @@ function Checkout() {
   const cartTotal = formatprice.format(
     cartItems.reduce((acc, item) => acc + item.quantity * item.product.price, 0)
   );
-  const { data, error, isLoading, sendRequest } = useHTTp({
+  const { data, error, sendRequest, resetData } = useHTTp({
     url: "http://localhost:3000/orders",
     config,
     initialData: [],
@@ -27,30 +30,57 @@ function Checkout() {
   const handleCloseCheckout = () => {
     dispatch(hideCheckout());
   };
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const fd = new FormData(event.target);
+  const handleresetCheckout = () => {
+    handleCloseCheckout();
+    resetData();
+    dispatch(clearCart());
+  };
+  const handelSendData = async (prevState, fd) => {
     const customerDetails = Object.fromEntries(fd.entries());
-    sendRequest(
+    await sendRequest(
       JSON.stringify({
         customer: customerDetails,
         items: cartItems,
       })
     );
   };
-  if (error) {
+  const [formState, formAction, isLoading] = useActionState(
+    handelSendData,
+    null
+  );
+  if (data && data.message && data.orderId && !error) {
     return (
-      <Modal open={userProgress === "checkout"} onClose={handleCloseCheckout}>
-        <Error message="Error in Submiting the order" />
+      <Modal
+        open={userProgress === "checkout"}
+        onClose={userProgress === "checkout" ? handleresetCheckout : null}
+      >
+        <h2>Order Submitted Successfully!</h2>
+        <p>Thank you for your order</p>
+        <div className="modal-actions">
+          <Button type="button" textOnly onClick={handleresetCheckout}>
+            OK
+          </Button>
+        </div>
       </Modal>
     );
+  }
+  let actions = (
+    <>
+      <Button type="button" textOnly onClick={handleCloseCheckout}>
+        Close
+      </Button>
+      <Button type="submit">Submit Order</Button>
+    </>
+  );
+  if (isLoading) {
+    actions = <p>Submitting Your Order...</p>;
   }
   return (
     <Modal
       open={userProgress === "checkout"}
       onClose={userProgress === "checkout" ? handleCloseCheckout : null}
     >
-      <form onSubmit={handleSubmit}>
+      <form action={formAction}>
         <h2>Checkout</h2>
         <p>Total Amount: {cartTotal}</p>
         <Input id="name" label="Full Name" type="text" />
@@ -60,19 +90,8 @@ function Checkout() {
           <Input id="postal-code" label="Postal Code" type="text" />
           <Input id="city" label="City" type="text" />
         </div>
-
-        <div className="modal-actions">
-          <Button type="button" textOnly onClick={handleCloseCheckout}>
-            Close
-          </Button>
-          {isLoading ? (
-            <Button type="submit" disabled>
-              Submitting...
-            </Button>
-          ) : (
-            <Button type="submit">Submit Order</Button>
-          )}
-        </div>
+        {error && <Error message="Error in Submiting the order" />}
+        <div className="modal-actions">{actions}</div>
       </form>
     </Modal>
   );

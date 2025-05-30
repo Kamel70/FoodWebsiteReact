@@ -24,6 +24,7 @@ app.post('/orders', async (req, res) => {
   try {
     // Fix: Use req.body directly instead of req.body.order
     const orderData = req.body;
+    await new Promise((resolve) => {setTimeout(resolve, 1000)}); // Simulate a delay for demonstration purposes
     
     // Add logging to debug
     console.log('Received order data:', orderData);
