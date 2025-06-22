@@ -9,7 +9,7 @@ function FoodList() {
     error,
     data: meals,
   } = useHTTP({
-    url: "http://localhost:3000/meals",
+    url: "https://foodwebsitebackend-production.up.railway.app/meals",
     config: Config,
     initialData: [],
   });

@@ -23,7 +23,7 @@ function Checkout() {
     cartItems.reduce((acc, item) => acc + item.quantity * item.product.price, 0)
   );
   const { data, error, sendRequest, resetData } = useHTTp({
-    url: "http://localhost:3000/orders",
+    url: "https://foodwebsitebackend-production.up.railway.app/orders",
     config,
     initialData: [],
   });

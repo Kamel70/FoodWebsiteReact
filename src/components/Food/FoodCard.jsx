@@ -4,7 +4,7 @@ import { addToCart } from "../../rtk/slices/cart-slice";
 import { useDispatch } from "react-redux";
 
 function FoodCard({ meal }) {
-  const url = `http://localhost:3000/`;
+  const url = `https://foodwebsitebackend-production.up.railway.app/`;
   const dispatch = useDispatch();
   const handleAddToCart = (item) => {
     dispatch(addToCart(item));
